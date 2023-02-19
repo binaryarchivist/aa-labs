@@ -13,13 +13,16 @@ def main() -> int:
     my_list = []
     sizes = []
 
-    for i in range(0, 250000, 10000):
+    for i in range(0, 100000, 10000):
         my_list = fill(my_list, -500000, 500000, i)
-        quick_sort(my_list)
-        # my_list = fill(my_list, -50000, 50000, i)
-        # counting_sort(my_list)
-        my_list = fill(my_list, -500000, 500000, i)
-        heap_sort(my_list)
+        test_arr = my_list
+        quick_sort(test_arr)
+        # test_arr = my_list
+        # merge_sort(test_arr)
+        test_arr = my_list
+        counting_sort(test_arr)
+        test_arr = my_list
+        heap_sort(test_arr)
         sizes.append(i)
         print(i)
 
