@@ -119,21 +119,30 @@ def counting_sort(arr):
     if not arr:
         return
 
-    # find the range of values in the input array
-    min_val = min(arr)
-    max_val = max(arr)
-
-    # create an empty count array
-    offset = abs(min_val)
-    count = [0] * (max_val - min_val + 1 + offset)
-
-    # count the occurrences of each value in the input array
-    for val in arr:
-        count[val + offset] += 1
-
-    # overwrite the input array with the sorted values
-    i = 0
-    for val in range(min_val, max_val + 1):
-        for j in range(count[val + offset]):
-            arr[i] = val
-            i += 1
+    # Find the minimum and maximum values in the input array
+    min_val, max_val = min(arr), max(arr)
+    
+    # Create a count array of size (max_val - min_val + 1) and initialize all elements to 0
+    count = [0] * (max_val - min_val + 1)
+    
+    # Count the frequency of each element in the input array
+    for num in arr:
+        count[num - min_val] += 1
+    
+    # Modify the count array to contain the cumulative sum of the counts
+    for i in range(1, len(count)):
+        count[i] += count[i - 1]
+    
+    # Create a new output array of the same size as the input array
+    output = [0] * len(arr)
+    
+    # Place each element in its correct position in the output array
+    for num in arr:
+        output[count[num - min_val] - 1] = num
+        count[num - min_val] -= 1
+    
+    # Shift the output array back by the minimum value to obtain the original values
+    for i in range(len(output)):
+        output[i] += min_val
+    
+    return output

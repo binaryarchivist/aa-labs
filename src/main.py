@@ -9,22 +9,21 @@ def fill(lst, start, end, count):
         lst.append(random.randint(start, end))
     return lst
 
-def run_func(func, list) -> None:
-    func(list)
-
 def main() -> int:
     my_list = []
     sizes = []
 
-    for i in range(0, 50000, 10000):
-        my_list = fill(my_list, -50000, 50000, i)
-        run_func(quick_sort, my_list)
-        my_list = fill(my_list, -50000, 50000, i)
-        run_func(counting_sort, my_list)
-        my_list = fill(my_list, -50000, 50000, i)
-        run_func(heap_sort, my_list)
+    for i in range(0, 250000, 10000):
+        my_list = fill(my_list, -500000, 500000, i)
+        quick_sort(my_list)
+        # my_list = fill(my_list, -50000, 50000, i)
+        # counting_sort(my_list)
+        my_list = fill(my_list, -500000, 500000, i)
+        heap_sort(my_list)
         sizes.append(i)
+        print(i)
 
+    # print(my_list)
     plot_result(sizes)
 
 
