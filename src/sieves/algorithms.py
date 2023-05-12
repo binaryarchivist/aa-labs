@@ -4,8 +4,8 @@ from typing import List
 from .profiler import exec_time
 
 
-@exec_time('sieve_1')
-def sieve1(n: int) -> List[int]:
+# @exec_time('sieve_1')
+def sieve1(n: int) -> List[bool]:
     c: List[bool] = [False] + [True] * n
     i: int = 2
 
@@ -17,11 +17,11 @@ def sieve1(n: int) -> List[int]:
                 j += i
         i += 1
 
-    return c
+    return [i for i in range(0, n) if c[i]]
 
 
-@exec_time('sieve_2')
-def sieve2(n: int) -> List[int]:
+# @exec_time('sieve_2')
+def sieve2(n: int) -> List[bool]:
     c: List[bool] = [False] + [True] * n
     i: int = 2
 
@@ -32,10 +32,10 @@ def sieve2(n: int) -> List[int]:
             j += i
         i += 1
 
-    return c
+    return [i for i in range(0, n) if c[i]]
 
 
-@exec_time('sieve_3')
+# @exec_time('sieve_3')
 def sieve3(n: int) -> List[int]:
     c: List[bool] = [False] + [True] * n
     i: int = 2
@@ -49,7 +49,7 @@ def sieve3(n: int) -> List[int]:
                 j += 1
         i += 1
 
-    return c
+    return [i for i in range(0, n) if c[i]]
 
 
 @exec_time('sieve_4')
