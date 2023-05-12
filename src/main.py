@@ -1,6 +1,6 @@
 from typing import List
 import random
-from graphs.graph import Graph, dfs, bfs
+from graphs.graph import Graph, dijkstra, floyd_warshall
 from graphs.profiler import plot_result
 
 
@@ -69,42 +69,35 @@ def complex_graph_with_cycles():
     return g
 
 
-def run_test(func, name):
-    print(name + ':')
-    bfs(func(), 0)
-    dfs(func(), 0)
-    print('---')
+def generate_random_graph(vertices, probability=0.5):
+    graph = Graph(vertices)
 
+    # Generate random edges with probabilities
+    for u in range(vertices):
+        for v in range(u + 1, vertices):
+            if random.random() <= probability:
+                weight = random.randint(1, 10)  # Random weight between 1 and 10
+                graph.add_edge(u, v, weight)
 
-def generate_random_graph(N, edge_probability=0.5):
-    g = Graph(N)
-    for i in range(N):
-        for j in range(i + 1, N):
-            if random.random() < edge_probability:
-                g.add_edge(i, j)
-
-    return g
+    return graph
 
 
 def main() -> int:
-    run_test(complete_binary_tree, 'Complete binary tree')
-    run_test(balanced_tree, 'Balanced Tree')
-    run_test(graph_with_cycle, 'Graph with Cycles')
-    run_test(disconnected_graph, 'Disconnected graph')
-    run_test(balanced_tree_vertices, 'Balanced tree with lots of vertices')
-    run_test(complex_graph_with_cycles, 'Complex graph with cycles and multiple branches')
+    # run_test(complete_binary_tree, 'Dij')
+    # run_test(balanced_tree, 'Balanced Tree')
     # plot_result(
     #     ['complete_binary_tree', 'balanced_tree', 'graph_with_cycle', 'disconnected_graph', 'balanced_tree_vertices',
     #      'complex_graph_with_cycles'])
-    # inp = []
-    # for _ in range(50, 1000, 100):
-    #     random_graph = generate_random_graph(_)
-    #     print(_)
-    #     dfs(random_graph, 0)
-    #     bfs(random_graph, 0)
-    #     inp.append(_)
-    #
-    # plot_result(inp)
+    inp = []
+    for _ in range(50, 350, 50):
+        random_graph = generate_random_graph(_)
+        print(_)
+        dijkstra(random_graph, 0)
+        floyd_warshall(random_graph, 0)
+        inp.append(_)
+        print(inp)
+
+    plot_result(inp)
     return 0
 
 

@@ -1,47 +1,64 @@
-from collections import deque
+import heapq
 from .profiler import exec_time
+
 
 class Graph:
     def __init__(self, vertices):
         self.vertices = vertices
         self.adj_list = {vertex: [] for vertex in range(self.vertices)}
 
-    def add_edge(self, u, v):
-        self.adj_list[u].append(v)
-        self.adj_list[v].append(u)
+    def add_edge(self, u, v, weight):
+        self.adj_list[u].append((v, weight))
+        self.adj_list[v].append((u, weight))
 
-def dfs_recursive(graph: Graph, start_vertex, visited):
-    visited[start_vertex] = True
-    print(start_vertex, end=' ')
 
-    for vertex in graph.adj_list[start_vertex]:
-        if not visited[vertex]:
-            dfs_recursive(graph, vertex, visited)
+@exec_time("floyd_warshall")
+def floyd_warshall(graph, start):
+    # Initialize the distance matrix with infinity for all pairs
+    distances = [[float('inf')] * graph.vertices for _ in range(graph.vertices)]
 
-@exec_time("dfs")
-def dfs(graph: Graph, start_vertex) -> any:
-    print("dfs: ", end="")
-    visited = [False] * graph.vertices
-    dfs_recursive(graph, start_vertex, visited)
+    # Set the distance of each vertex to itself as 0
+    for vertex in range(graph.vertices):
+        distances[vertex][vertex] = 0
 
-@exec_time("bfs")
-def bfs(graph: Graph, start_vertex) -> any:
-    visited = [False] * graph.vertices
+    # Populate the distance matrix with direct edges
+    for vertex, neighbors in graph.adj_list.items():
+        for neighbor, weight in neighbors:
+            distances[vertex][neighbor] = weight
+            distances[neighbor][vertex] = weight
 
-    # Create a queue for BFS and enqueue the start_vertex
-    queue = deque([start_vertex])
+    # Dynamic programming - Floyd-Warshall algorithm
+    for k in range(graph.vertices):
+        for i in range(graph.vertices):
+            for j in range(graph.vertices):
+                distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j])
 
-    # Mark the start_vertex as visited
-    visited[start_vertex] = True
-    print("bfs: ", end="")
+    return distances[start]
+
+
+@exec_time("dijkstra")
+def dijkstra(graph, start):
+    # Initialize distances to all vertices as infinity except the start vertex
+    distances = [float('inf')] * graph.vertices
+    distances[start] = 0
+
+    # Priority queue to store vertices and their distances
+    queue = [(0, start)]
+
     while queue:
-        # Dequeue a vertex from the queue and print it
-        current_vertex = queue.popleft()
-        print(current_vertex, end=' ')
+        current_distance, current_vertex = heapq.heappop(queue)
 
-        # Get all adjacent vertices of the dequeued vertex
-        for vertex in graph.adj_list[current_vertex]:
-            # If the adjacent vertex is not visited, mark it as visited and enqueue it
-            if not visited[vertex]:
-                visited[vertex] = True
-                queue.append(vertex)
+        # Skip if the current distance is greater than the stored distance
+        if current_distance > distances[current_vertex]:
+            continue
+
+        # Dynamic programming - Dijkstra's algorithm
+        for neighbor, weight in graph.adj_list[current_vertex]:
+            distance = current_distance + weight
+
+            # Update the distance if a shorter path is found
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(queue, (distance, neighbor))
+
+    return distances
